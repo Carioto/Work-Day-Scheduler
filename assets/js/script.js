@@ -1,73 +1,63 @@
 var thisDay = dayjs();
 var displayDate = document.querySelector("#currentDay");
 var btnClick = $('.saveBtn');
-var localDesc = document.querySelector(".description");    
+var localDesc = document.querySelector(".description");  
+var todayTime = document.querySelector("#currentTime");  
 
-
+// After page loads...
 $(document).ready(function () {
+  // ...display current date... 
   displayDate.textContent = thisDay.format('MMMM DD, YYYY');
+  // ...and time...
+  var timeInterval = setInterval (function() {
+    var thisDay = dayjs();
+    todayTime.textContent = thisDay.format("hh:mm:ss a");
+    
+  }, 1000);
+
+  // get current hour and format it to match our div IDs
   var nowHour = thisDay.format('[hour-]HH');
   
+  // For each hour block
   $(".time-block").each(function() {
     var hourBlock = $(this).attr("id")
+    // Retrieve any notes from local storage for the current hour block
     var commentBlock = localStorage.getItem($(this).attr("id"));
     if (nowHour > hourBlock){
-      
+      // if current hour block is in the past
+      // assign 'past' class and add any notes from local storage
       $(this).removeClass("future");
       $(this).removeClass("present");
       $(this).addClass("past");
       $(this).children(".description").val(commentBlock);
-
+      
     }
+    // if current hour block is the current hour
+    // assign 'present' class and add any notes from local storage
     else if (nowHour === hourBlock){
       $(this).removeClass("future");
       $(this).removeClass("past");
       $(this).addClass("present");
       $(this).children(".description").val(commentBlock);
-
     }
     else {
-    $(this).removeClass("past");
+      // if current hour block is in the future
+      // assign 'future' class and add any notes from local storage
+      $(this).removeClass("past");
     $(this).removeClass("present");
     $(this).addClass("future");
     $(this).children(".description").val(commentBlock);
-    }});
+    }
+  });
 
-  
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+    // when any save button is pressed
   btnClick.on("click", function(){
-
+    //add the corresponding hour and notes to local storage
    var appTime = $(this).parent().attr("id");
    var apptText = $(this).siblings(".description").val();
     console.log(appTime);
     console.log(apptText);
    localStorage.setItem(appTime,apptText);
    
-  })
-   
-
-
-  //
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-  // TODO: Add code to display the current date in the header of the page.
+  })   
  });
